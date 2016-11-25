@@ -21,10 +21,10 @@ At any point you can visit http://localhost:8000/admin?stats to view the inner w
 If we simply want to use a known, finite number of HTTP servers we can use a simple HAProxy configuration and launch the number of processes.
 
 ```shell
-haproxy ./basic.cfg
-./service-basic-web.js 20001
-./service-basic-web.js 20002
-curl http://localhost:8000/
+haproxy ./basic.cfg             # Terminal 1
+./service-basic-web.js 20001    # Terminal 2
+./service-basic-web.js 20002    # Terminal 3
+curl http://localhost:8000/     # Terminal 4
 ```
 
 Unfortunately any time we scale the number of processes we need mo manually modify `basic.cfg`. Luckily we can do better.
