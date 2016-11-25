@@ -1,0 +1,28 @@
+{
+  "name": "consul-haproxy-example",
+  "version": "1.0.0",
+  "description": "HAProxy load balancing Node.js apps discovered via Consul",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tlhunter/consul-haproxy-example.git"
+  },
+  "keywords": [
+    "consul",
+    "discovery",
+    "consul-template",
+    "haproxy"
+  ],
+  "author": "Thomas Hunter II <me@thomashunter.name>",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/tlhunter/consul-haproxy-example/issues"
+  },
+  "homepage": "https://github.com/tlhunter/consul-haproxy-example#readme",
+  "dependencies": {
+    "consul": "^0.27.0"
+  }
+}
