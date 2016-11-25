@@ -34,39 +34,21 @@ Unfortunately any time we scale the number of processes we need mo manually modi
 Start a couple data providers, launch an HTTP server, launch HAProxy. Make a few requests and note that they are routed to a single HTTP server. Launch a new server and notice how requests are split between both. Kill an HTTP server and again see how requests are back down to a single server.
 
 ```shell
-# Terminal 1
-./service-data.js 30001
-
-# Terminal 2
-./service-data.js 30002
-
-# Terminal 3
-./service-http.js 20001
-
-# Terminal 4
-consul-template
-
-# Terminal 5
-haproxy ./haproxy.cfg
-
-# Terminal 6
+consul agent -dev               # Terminal 0
+./service-data.js 30001         # Terminal 1
+./service-data.js 30002         # Terminal 2
+./service-http.js 20001         # Terminal 3
+consul-template                 # Terminal 4
+haproxy ./haproxy.cfg           # Terminal 5
+curl http://localhost:8000      # Terminal 6
 curl http://localhost:8000
 curl http://localhost:8000
-curl http://localhost:8000
-
-# Terminal 7
-./service-http.js 20002
-
-# Terminal 6
+./service-http.js 20002         # Terminal 7
+curl http://localhost:8000      # Terminal 6
 curl http://localhost:8000
 curl http://localhost:8000
-curl http://localhost:8000
-
-# Terminal 5
-# Ctrl + C
-
-# Terminal 6
-curl http://localhost:8000
+# Ctrl + C                      # Terminal 5
+curl http://localhost:8000      # Terminal 6
 curl http://localhost:8000
 curl http://localhost:8000
 ```
