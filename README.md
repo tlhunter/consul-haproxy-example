@@ -38,8 +38,9 @@ consul agent -dev               # Terminal 0
 ./service-data.js 30001         # Terminal 1
 ./service-data.js 30002         # Terminal 2
 ./service-http.js 20001         # Terminal 3
-consul-template                 # Terminal 4
-haproxy ./haproxy.cfg           # Terminal 5
+# Terminal 4
+consul-template -template "./advanced.cfg.template:./advanced.cfg:./haproxy-restart.sh"
+haproxy ./advanced.cfg          # Terminal 5
 curl http://localhost:8000      # Terminal 6
 curl http://localhost:8000
 curl http://localhost:8000

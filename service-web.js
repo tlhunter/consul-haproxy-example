@@ -42,10 +42,12 @@ function getData(cb) {
   });
 }
 
+/*
 app.get('/health', (req, res) => {
   console.log('GET /health', Date.now());
   res.send('ok');
 });
+*/
 
 app.listen(PORT, () => {
   let details = {

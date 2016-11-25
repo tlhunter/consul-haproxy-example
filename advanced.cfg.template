@@ -1,0 +1,17 @@
+global
+  maxconn 64
+
+defaults
+  mode http
+  timeout connect 5000ms
+  timeout client 50000ms
+  timeout server 50000ms
+
+frontend http-in
+  bind localhost:8000
+  default_backend web
+  stats enable
+  stats uri /admin?stats
+
+backend web{{range service "www"}}
+  server {{.ID}} {{.Address}}:{{.Port}} maxconn 32{{end}}
