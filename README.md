@@ -12,6 +12,10 @@ Each of these programs consist of a single binary. You can choose to install the
 
 Also, checkout this repository and run `npm install` to get the required packages.
 
+## HAProxy Stats
+
+At any point you can visit http://localhost:8000/admin?stats to view the inner workings of HAProxy.
+
 ## Simple Static Usage
 
 If we simply want to use a known, finite number of HTTP servers we can use a simple HAProxy configuration and launch the number of processes.
