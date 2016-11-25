@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/tlhunter/consul-haproxy-example#readme",
   "dependencies": {
-    "consul": "^0.27.0"
+    "consul": "^0.27.0",
+    "express": "^4.14.0"
   }
 }

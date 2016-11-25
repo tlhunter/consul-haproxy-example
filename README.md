@@ -10,19 +10,34 @@ Each of these programs consist of a single binary. You can choose to install the
 * [Consul](https://github.com/hashicorp/consul)
 * [Consul Template](https://github.com/hashicorp/consul-template)
 
-## Usage
+Also, checkout this repository and run `npm install` to get the required packages.
+
+## Simple Static Usage
+
+If we simply want to use a known, finite number of HTTP servers we can use a simple HAProxy configuration and launch the number of processes.
+
+```shell
+haproxy ./basic.cfg
+./service-basic-web.js 20001
+./service-basic-web.js 20002
+curl http://localhost:8000/
+```
+
+Unfortunately any time we scale the number of processes we need mo manually modify `basic.cfg`. Luckily we can do better.
+
+## Dynamic Usage
 
 Start a couple data providers, launch an HTTP server, launch HAProxy. Make a few requests and note that they are routed to a single HTTP server. Launch a new server and notice how requests are split between both. Kill an HTTP server and again see how requests are back down to a single server.
 
 ```shell
 # Terminal 1
-./service-data.js
+./service-data.js 30001
 
 # Terminal 2
-./service-data.js
+./service-data.js 30002
 
 # Terminal 3
-./service-http.js
+./service-http.js 20001
 
 # Terminal 4
 consul-template
@@ -36,7 +51,7 @@ curl http://localhost:8000
 curl http://localhost:8000
 
 # Terminal 7
-./service-http.js
+./service-http.js 20002
 
 # Terminal 6
 curl http://localhost:8000
