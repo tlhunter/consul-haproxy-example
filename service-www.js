@@ -42,12 +42,10 @@ function getData(cb) {
   });
 }
 
-/*
 app.get('/health', (req, res) => {
   console.log('GET /health', Date.now());
   res.send('ok');
 });
-*/
 
 app.listen(PORT, () => {
   let details = {
@@ -64,6 +62,13 @@ app.listen(PORT, () => {
       throw new Error(err);
     }
     console.log('registered with Consul');
+
+    consul.agent.check.register({
+      name: "health-endpoint-www",
+      interval: '5s',
+      notes: "HTTP GET /health",
+      http: `http://${HOST}:${PORT}/health`
+    }, err => { if (err) throw new Error(err)});
 
     process.on('SIGINT', () => {
       console.log('SIGINT. De-Registering...');
