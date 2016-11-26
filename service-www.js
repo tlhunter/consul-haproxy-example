@@ -29,10 +29,10 @@ app.get('/', (req, res) => {
 });
 
 function getData(cb) {
-  consul.catalog.service.nodes('data', (err, nodes) => {
+  consul.health.service({service:'data', passing:true}, (err, nodes) => {
     if (err) return cb(err);
     let node = nodes[Math.floor(Math.random()*nodes.length)];
-    let url = `http://${node.ServiceAddress}:${node.ServicePort}/`;
+    let url = `http://${node.Service.Address}:${node.Service.Port}/`;
     console.log('URL', url);
     request(url, {json:true}, (err, res, data) => {
       if (err) return cb(err);
