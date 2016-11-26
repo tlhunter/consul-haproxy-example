@@ -64,10 +64,9 @@ app.listen(PORT, () => {
     console.log('registered with Consul');
 
     consul.agent.check.register({
-      name: `health-${CONSUL_ID}`,
+      name: 'www-health',
+      id: `health-id-${CONSUL_ID}`,
       interval: '5s',
-      ttl: '15s',
-      notes: "HTTP GET /health",
       http: `http://${HOST}:${PORT}/health`
     }, err => { if (err) throw new Error(err)});
 
@@ -76,7 +75,11 @@ app.listen(PORT, () => {
       let details = {id: CONSUL_ID};
       consul.agent.service.deregister(details, (err) => {
         console.log('de-registered.', err);
-        process.exit();
+        console.log('de-registering health...');
+        consul.agent.check.deregister(`health-id-${CONSUL_ID}`, err => {
+          console.log('de-registered health.', err);
+          process.exit();
+        });
       });
     });
   });

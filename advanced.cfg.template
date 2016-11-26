@@ -1,5 +1,5 @@
 global
-  maxconn 64
+  maxconn 256
 
 defaults
   mode http
