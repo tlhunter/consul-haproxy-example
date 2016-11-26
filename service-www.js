@@ -51,35 +51,35 @@ app.listen(PORT, () => {
   let details = {
     name: 'www',
     address: HOST,
+    check: {
+      ttl: '10s',
+      deregister_critical_service_after: '1m'
+    },
     port: PORT,
     id: CONSUL_ID
   };
 
   console.log(`PID: ${PID}, PORT: ${PORT}, ID: ${CONSUL_ID}`);
 
-  consul.agent.service.register(details, err => {
+  consul.agent.service.register(details, (err, xyz) => {
     if (err) {
       throw new Error(err);
     }
     console.log('registered with Consul');
 
-    consul.agent.check.register({
-      name: 'www-health',
-      id: `health-id-${CONSUL_ID}`,
-      interval: '5s',
-      http: `http://${HOST}:${PORT}/health`
-    }, err => { if (err) throw new Error(err)});
+    setInterval(() => {
+      consul.agent.check.pass({id:`service:${CONSUL_ID}`}, err => {
+        if (err) throw new Error(err);
+        console.log('told Consul that we are healthy');
+      });
+    }, 5 * 1000);
 
     process.on('SIGINT', () => {
       console.log('SIGINT. De-Registering...');
       let details = {id: CONSUL_ID};
       consul.agent.service.deregister(details, (err) => {
         console.log('de-registered.', err);
-        console.log('de-registering health...');
-        consul.agent.check.deregister(`health-id-${CONSUL_ID}`, err => {
-          console.log('de-registered health.', err);
-          process.exit();
-        });
+        process.exit();
       });
     });
   });
