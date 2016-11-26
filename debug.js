@@ -4,7 +4,7 @@ const consul = require('consul')();
 
 function handler (err, nodes) {
   for (let i = 0; i < nodes.length; i++) {
-    console.log(nodes[i]);
+    console.log(nodes[i].ServiceID);
   }
 }
 
