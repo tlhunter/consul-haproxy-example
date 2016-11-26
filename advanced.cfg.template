@@ -9,9 +9,9 @@ defaults
 
 frontend http-in
   bind localhost:8000
-  default_backend web
+  default_backend www
   stats enable
   stats uri /admin?stats
 
-backend web{{range service "www"}}
+backend www{{range service "www"}}
   server {{.ID}} {{.Address}}:{{.Port}} maxconn 32{{end}}

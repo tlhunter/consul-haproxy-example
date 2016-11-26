@@ -10,7 +10,7 @@ const app = express();
 const PID = process.pid;
 const PORT = Math.floor(process.argv[2]);
 const HOST = os.hostname();
-const CONSUL_ID = `www-${HOST}:${PORT}-${uuid.v4()}`;
+const CONSUL_ID = `www-${HOST}-${PORT}-${uuid.v4()}`;
 
 app.get('/', (req, res) => {
   console.log('GET /', Date.now());
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 });
 
 function getData(cb) {
-  consul.catalog.service.nodes('data-provider', (err, nodes) => {
+  consul.catalog.service.nodes('data', (err, nodes) => {
     if (err) return cb(err);
     let node = nodes[Math.floor(Math.random()*nodes.length)];
     let url = `http://${node.ServiceAddress}:${node.ServicePort}/`;
@@ -64,8 +64,9 @@ app.listen(PORT, () => {
     console.log('registered with Consul');
 
     consul.agent.check.register({
-      name: "health-endpoint-www",
+      name: `health-${CONSUL_ID}`,
       interval: '5s',
+      ttl: '15s',
       notes: "HTTP GET /health",
       http: `http://${HOST}:${PORT}/health`
     }, err => { if (err) throw new Error(err)});

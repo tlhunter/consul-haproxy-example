@@ -9,7 +9,7 @@ const app = express();
 const PID = process.pid;
 const PORT = Math.floor(process.argv[2]);
 const HOST = os.hostname();
-const CONSUL_ID = `data-${HOST}:${PORT}-${uuid.v4()}`;
+const CONSUL_ID = `data-${HOST}-${PORT}-${uuid.v4()}`;
 
 app.get('/', (req, res) => {
   console.log('GET /', Date.now());
@@ -26,7 +26,7 @@ app.get('/health', (req, res) => {
 
 app.listen(PORT, () => {
   let details = {
-    name: 'data-provider',
+    name: 'data',
     address: HOST,
     port: PORT,
     id: CONSUL_ID
@@ -41,8 +41,9 @@ app.listen(PORT, () => {
     console.log('registered with Consul');
 
     consul.agent.check.register({
-      name: "health-endpoint-data",
+      name: `health-${CONSUL_ID}`,
       interval: '5s',
+      ttl: '15s',
       notes: "HTTP GET /health",
       http: `http://${HOST}:${PORT}/health`
     }, err => { if (err) throw new Error(err)});
