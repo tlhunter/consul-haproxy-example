@@ -9,7 +9,7 @@ const app = express();
 const PID = process.pid;
 const PORT = Math.floor(process.argv[2]);
 const HOST = os.hostname();
-const CONSUL_ID = uuid.v4();
+const CONSUL_ID = `data-${HOST}:${PORT}-${uuid.v4()}`;
 
 app.get('/', (req, res) => {
   console.log('GET /', Date.now());
