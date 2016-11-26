@@ -2,15 +2,39 @@
 
 const consul = require('consul')();
 
-function handler (err, nodes) {
-  for (let i = 0; i < nodes.length; i++) {
-    console.log(nodes[i].Service.ID);
-    //console.log(nodes[i]);
-  }
+function handler(nodes) {
+  console.log('\n');
+
+  nodes.forEach(entry => {
+    console.log(entry.Service.ID);
+    console.log(`http://${entry.Service.Address}:${entry.Service.Port}/`);
+  });
 }
 
-setInterval(() => {
-  console.log('ITEMS:');
-  consul.health.service({service:'data', passing:true}, handler);
-  consul.health.service({service:'www', passing:true}, handler);
-}, 2 * 1000);
+var data_watcher = consul.watch({
+  method: consul.health.service,
+  options: {
+    service: 'data',
+    passing: true
+  }
+});
+
+data_watcher.on('change', handler);
+
+data_watcher.on('error', err => {
+  console.error('watch data error', err);
+});
+
+var www_watcher = consul.watch({
+  method: consul.health.service,
+  options: {
+    service: 'www',
+    passing: true
+  }
+});
+
+www_watcher.on('change', handler);
+
+www_watcher.on('error', err => {
+  console.error('watch www error', err);
+});

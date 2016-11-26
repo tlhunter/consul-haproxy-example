@@ -12,6 +12,8 @@ const PORT = Math.floor(process.argv[2]);
 const HOST = os.hostname();
 const CONSUL_ID = `www-${HOST}-${PORT}-${uuid.v4()}`;
 
+let known_data_instances = []; // Array of URLs to instances of the data service
+
 app.get('/', (req, res) => {
   console.log('GET /', Date.now());
   getData((err, data) => {
@@ -29,16 +31,12 @@ app.get('/', (req, res) => {
 });
 
 function getData(cb) {
-  consul.health.service({service:'data', passing:true}, (err, nodes) => {
+  let url = known_data_instances[Math.floor(Math.random()*known_data_instances.length)];
+  console.log('URL', url);
+  request(url, {json:true}, (err, res, data) => {
     if (err) return cb(err);
-    let node = nodes[Math.floor(Math.random()*nodes.length)];
-    let url = `http://${node.Service.Address}:${node.Service.Port}/`;
-    console.log('URL', url);
-    request(url, {json:true}, (err, res, data) => {
-      if (err) return cb(err);
 
-      cb(null, data);
-    });
+    cb(null, data);
   });
 }
 
@@ -83,4 +81,26 @@ app.listen(PORT, () => {
       });
     });
   });
+});
+
+// Keep a list of healthy services
+var watcher = consul.watch({
+  method: consul.health.service,
+  options: {
+    service:'data',
+    passing:true
+  }
+});
+
+watcher.on('change', data => {
+  console.log('received discovery update:', data.length);
+  known_data_instances = [];
+
+  data.forEach(entry => {
+    known_data_instances.push(`http://${entry.Service.Address}:${entry.Service.Port}/`);
+  });
+});
+
+watcher.on('error', err => {
+  console.error('watch error', err);
 });
