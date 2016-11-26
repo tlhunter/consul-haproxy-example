@@ -2,6 +2,8 @@
 
 This project will show how to dynamically instantiate Node.js application processes and have Consul reconfigure and restart HAProxy.
 
+![Overview Diagram](./overview.png)
+
 ## Pre Requisites
 
 Each of these programs consist of a single binary. You can choose to install them completely or simply download and execute the binary. If doing the latter be sure to adjust relative paths.
