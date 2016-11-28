@@ -43,14 +43,34 @@ consul agent -dev               # Terminal 1
 # Terminal 4
 consul-template -template "./advanced.cfg.template:./advanced.cfg:./haproxy-restart.sh"
 curl http://localhost:8000      # Terminal 6
-curl http://localhost:8000
-curl http://localhost:8000
+curl http://localhost:8000      # Terminal 6
+curl http://localhost:8000      # Terminal 6
 ./service-www.js 20002          # Terminal 7
 curl http://localhost:8000      # Terminal 6
-curl http://localhost:8000
-curl http://localhost:8000
+curl http://localhost:8000      # Terminal 6
+curl http://localhost:8000      # Terminal 6
 # Ctrl + C                      # Terminal 4
 curl http://localhost:8000      # Terminal 6
-curl http://localhost:8000
-curl http://localhost:8000
+curl http://localhost:8000      # Terminal 6
+curl http://localhost:8000      # Terminal 6
+```
+
+### Returned Data
+
+As the requests run you will see different data returned when you make cURL requests, depending on which servers are running.
+
+If there are two `www` servers running you'll see the PID values alternate back and forth as HAProxy does round-robin proxying between the services.
+
+If there are two `data` servers running you'll see the PID values randomly jump as our application randomly routes traffic between the instances.
+
+Of course if you scale up or down the number of either `data` or `www` services, the PIDs will shrink or grow accordingly. I'm specifically using PID values to show that different processes are handling the workloads.
+
+```json
+{
+  "data": {
+    "data": 12345678,
+    "data_pid": 20001
+  },
+  "web_pid": 20101
+}
 ```
